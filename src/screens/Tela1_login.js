@@ -11,9 +11,11 @@ import {
 
 const LoginScreen = () => {
 
-  const [email, setEmail] = useState('rique.31galdinohotmail.com');
-  const [password, setPassword] = useState('13431345Gf?');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isValidEmail, setIsValidEmail] = useState(false);
+  const [msgErrorEmail, setMsgErrorEmail] = useState(false);
+  const [msgErrorPassword, setMsgErrorPassword] = useState(false);
   const [isValidPassword, setIsValidPassword] = useState(false);
   const [stylesInputEmail, setStylesInputEmail] = useState([styles.input]);
   const [stylesInputPassword, setStylesInputPassword] = useState([styles.input]);
@@ -21,31 +23,38 @@ const LoginScreen = () => {
   const handleEmailChange = (text) => {
     setEmail(text);
     setStylesInputEmail([styles.input])
+    setMsgErrorEmail(false)
   };
-
+  
   const handlePasswordChange = (password) => {
     setPassword(password);
     setStylesInputPassword([styles.input])
+    setMsgErrorPassword(false)
   };
 
   const handlePress = () => {
     console.warn('Email é Válido:', isValidEmail);
     console.warn('Senha é Válida:', isValidPassword);
+    console.warn('Menssagem de erro é Válida:', msgErrorEmail);
 
+    
     setIsValidPassword(isPasswordValid(email));
     setIsValidEmail(validateEmail(password));
-
+    
+    if (!isValidEmail) {
+      setStylesInputEmail([styles.input, styles.inputError])
+      setMsgErrorEmail(true)
+    } else {
+      setStylesInputEmail([styles.input])
+    }
+    
     if (!isValidPassword) {
       setStylesInputPassword([styles.input, styles.inputError]);
+      setMsgErrorPassword(true)
     } else {
       setStylesInputPassword([styles.input]);
     }
 
-    if (!isValidEmail) {
-      setStylesInputEmail([styles.input, styles.inputError])
-    } else {
-      setStylesInputEmail([styles.input])
-    }
   };
 
   const validateEmail = (email) => {
@@ -86,7 +95,7 @@ const LoginScreen = () => {
           onChangeText={handleEmailChange}
           value={email}
           keyboardType='email-address' />
-          {!isValidEmail ? <Text style={styles.msgErrorEmail}>Error</Text> : null}
+          {msgErrorEmail ? <Text style={styles.msgErrorEmail}>Error</Text> : null}
         <TextInput
           placeholder='Senha'
           style={stylesInputPassword}
